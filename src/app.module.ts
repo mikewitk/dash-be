@@ -6,6 +6,7 @@ import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { Transaction } from './transactions/transaction.entity';
+import { SchedulesModule } from './schedules/schedules.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -16,6 +17,7 @@ import { Transaction } from './transactions/transaction.entity';
     }),
     UsersModule,
     TransactionsModule,
+    SchedulesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
