@@ -1,4 +1,13 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+import { TransactionsService } from './transactions.service';
 
 @Controller('transactions')
-export class TransactionsController {}
+export class TransactionsController {
+  constructor(private transactionsService: TransactionsService) {}
+
+  @Get()
+  getTransactionsSummary() {
+    const user = {};
+    return this.transactionsService.getTransactionsSummary(user);
+  }
+}
