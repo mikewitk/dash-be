@@ -4,8 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Product } from './products/entities/product.entity';
 import { ProductsModule } from './products/products.module';
-import { SchedulesModule } from './schedules/schedules.module';
-import { Transaction } from './transactions/transaction.entity';
+import { Transaction } from './transactions/entities/transaction.entity';
 import { TransactionsModule } from './transactions/transactions.module';
 import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
@@ -18,9 +17,8 @@ import { UsersModule } from './users/users.module';
       synchronize: true,
     }),
     ProductsModule,
-    SchedulesModule,
-    TransactionsModule,
     UsersModule,
+    TransactionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

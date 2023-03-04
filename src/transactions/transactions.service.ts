@@ -1,49 +1,59 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Product } from 'src/products/entities/product.entity';
+import { User } from 'src/users/user.entity';
+import { Repository } from 'typeorm';
+import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { Transaction } from './entities/transaction.entity';
 
-export interface ITransactionsSummary {
-  totalRevenue: number;
-  totalTransactions: number;
-  totalProducts: number;
-  totalUsers: number;
-}
 @Injectable()
 export class TransactionsService {
-  /**
-   * user: user info to validate endpoint
-   * @returns totalRevenue: number, totalTransactions: number, totalProducts: number, totalUsers: number
-   */
-  getTransactionsSummary(user) {
-    const transactionsSummary: ITransactionsSummary = {
-      totalProducts: 0,
-      totalRevenue: 0,
-      totalTransactions: 0,
-      totalUsers: 0,
-    };
+  constructor(
+    @InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(Product) private productRepo: Repository<Product>,
+    @InjectRepository(Transaction)
+    private transactionRepo: Repository<Transaction>,
+  ) {}
 
-    if (!user) {
-      throw new BadRequestException('wrong credentials');
+  async create(createTransactionDto: CreateTransactionDto) {
+    const { product_id, quantity, user_id } = createTransactionDto;
+
+    const product = await this.productRepo.findOne({
+      where: { id: product_id },
+    });
+    console.log('product', product);
+
+    const user = await this.userRepo.findOne({ where: { id: user_id } });
+    console.log('user', user);
+
+    if (!product || !user) {
+      throw new Error('product or user not found');
     }
 
-    return transactionsSummary;
+    const transaction = this.transactionRepo.create({
+      product_id,
+      user_id,
+      quantity,
+      date: new Date().toISOString(),
+    });
+
+    return this.transactionRepo.save(transaction);
   }
 
-  getTransactions() {
-    return 'All Transactions';
+  findAll() {
+    return `This action returns all transactions`;
   }
 
-  getTransaction() {
-    return 'Transaction';
+  findOne(id: number) {
+    return `This action returns a #${id} transaction`;
   }
 
-  createTransaction() {
-    return 'Transaction created';
+  update(id: number, updateTransactionDto: UpdateTransactionDto) {
+    return `This action updates a #${id} transaction`;
   }
 
-  updateTransaction() {
-    return 'Transaction updated';
-  }
-
-  deleteTransaction() {
-    return 'Transaction deleted';
+  remove(id: number) {
+    return `This action removes a #${id} transaction`;
   }
 }
