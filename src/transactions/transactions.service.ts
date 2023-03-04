@@ -22,10 +22,8 @@ export class TransactionsService {
     const product = await this.productRepo.findOne({
       where: { id: product_id },
     });
-    console.log('product', product);
 
     const user = await this.userRepo.findOne({ where: { id: user_id } });
-    console.log('user', user);
 
     if (!product || !user) {
       throw new Error('product or user not found');
@@ -35,25 +33,45 @@ export class TransactionsService {
       product_id,
       user_id,
       quantity,
-      date: new Date().toISOString(),
+      date: new Date().toLocaleString(),
     });
 
     return this.transactionRepo.save(transaction);
   }
 
-  findAll() {
-    return `This action returns all transactions`;
+  async findAll() {
+    return await this.transactionRepo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
+  async findOne(id: number) {
+    const transaction = await this.transactionRepo.findOne({ where: { id } });
+
+    if (!transaction) {
+      throw new Error('transaction not found');
+    }
+
+    return transaction;
   }
 
-  update(id: number, updateTransactionDto: UpdateTransactionDto) {
-    return `This action updates a #${id} transaction`;
+  async update(id: number, updateTransactionDto: UpdateTransactionDto) {
+    const transaction = await this.transactionRepo.findOne({ where: { id } });
+
+    if (!transaction) {
+      throw new Error('transaction not found');
+    }
+
+    Object.assign(transaction, updateTransactionDto);
+
+    return this.transactionRepo.save(transaction);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} transaction`;
+  async remove(id: number) {
+    const transaction = await this.transactionRepo.findOne({ where: { id } });
+
+    if (!transaction) {
+      throw new Error('transaction not found');
+    }
+
+    return this.transactionRepo.remove(transaction);
   }
 }
