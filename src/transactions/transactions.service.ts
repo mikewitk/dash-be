@@ -44,21 +44,13 @@ export class TransactionsService {
   }
 
   async findOne(id: number) {
-    const transaction = await this.transactionRepo.findOne({ where: { id } });
-
-    if (!transaction) {
-      throw new Error('transaction not found');
-    }
+    const transaction = await this.getTransaction(id);
 
     return transaction;
   }
 
   async update(id: number, updateTransactionDto: UpdateTransactionDto) {
-    const transaction = await this.transactionRepo.findOne({ where: { id } });
-
-    if (!transaction) {
-      throw new Error('transaction not found');
-    }
+    const transaction = await this.getTransaction(id);
 
     Object.assign(transaction, updateTransactionDto);
 
@@ -66,12 +58,18 @@ export class TransactionsService {
   }
 
   async remove(id: number) {
+    const transaction = await this.getTransaction(id);
+
+    return this.transactionRepo.remove(transaction);
+  }
+
+  private async getTransaction(id: number) {
     const transaction = await this.transactionRepo.findOne({ where: { id } });
 
     if (!transaction) {
       throw new Error('transaction not found');
     }
 
-    return this.transactionRepo.remove(transaction);
+    return transaction;
   }
 }
